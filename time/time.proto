@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package time;
+option go_package = "github.com/Faurby/endpoint_docker;time";
+
+service TimeService {
+    rpc GetTime (GetTimeRequest) returns (GetTimeReply) {}
+}
+
+message GetTimeRequest {}
+message GetTimeReply {
+    string message = 1;
+}

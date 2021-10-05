@@ -2,13 +2,17 @@ FROM golang:latest
 
 RUN mkdir /build
 WORKDIR /build
+COPY . /build/
 
-RUN export G111MODULE=on
-RUN go get github.com/Faurby/endpoint_docker/tree/master/main
-RUN cd /build && git clone https://github.com/Faurby/endpoint_docker.git
+RUN apt-get update
+RUN apt install -y protobuf-compiler
 
-RUN cd /build/endpoint_docker/main && go build
+RUN GO111MODULE=on \
+        go get google.golang.org/protobuf/cmd/protoc-gen-go@v1.25.0 \
+        google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
 
-#EXPOSE 8080
+RUN protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative time/time.proto
 
-#ENTRYPOINT [ "/build/endpoint_docker/main/main"]
+EXPOSE 8080
+
+ENTRYPOINT [ "" ]
